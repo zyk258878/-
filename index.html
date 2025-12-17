@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>二元一次方程求解器 - Vibe Coding</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>最短路径可视化工具</title>
     <style>
         * {
             margin: 0;
@@ -14,1001 +13,625 @@
         }
         
         body {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             index.html
+            background-color: #f5f7fa;
             color: #333;
-            min-height: 100vh;
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            min-height: 100vh;
         }
         
         .container {
-            width: 100%;
-            max-width: 1300px;
+            max-width: 1400px;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
         
         header {
             text-align: center;
-            margin-bottom: 30px;
-            color: white;
-            width: 100%;
             padding: 20px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
         h1 {
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
         
         .subtitle {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             opacity: 0.9;
             max-width: 800px;
             margin: 0 auto;
-            line-height: 1.5;
         }
         
-        .app-container {
+        .content {
             display: flex;
             flex-wrap: wrap;
-            gap: 25px;
-            justify-content: center;
-            margin-bottom: 30px;
+            gap: 20px;
         }
         
-        .panel {
-            background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            padding: 25px;
+        .control-panel {
             flex: 1;
             min-width: 300px;
-            max-width: 400px;
-            transition: transform 0.3s ease;
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
         
-        .panel:hover {
-            transform: translateY(-5px);
-        }
-        
-        .panel-title {
-            font-size: 1.5rem;
-            color: #2575fc;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #eee;
+        .visualization {
+            flex: 2;
+            min-width: 500px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             display: flex;
-            align-items: center;
-            gap: 10px;
+            flex-direction: column;
         }
         
-        .panel-title i {
-            color: #6a11cb;
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 8px;
         }
         
-        .equation-input {
+        .input-group {
             margin-bottom: 25px;
         }
         
-        .equation-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .equation-label {
-            font-size: 1.1rem;
+        label {
+            display: block;
+            margin-bottom: 8px;
             font-weight: 600;
             color: #444;
-            min-width: 60px;
         }
         
-        .coefficient-input {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1;
-            max-width: 300px;
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
         }
         
-        .coeff-input {
-            width: 80px;
-            padding: 12px 15px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            text-align: center;
-            transition: all 0.3s;
-            font-weight: 600;
-        }
-        
-        .coeff-input:focus {
+        input:focus {
             border-color: #6a11cb;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.2);
-        }
-        
-        .coeff-label {
-            font-weight: 600;
-            min-width: 20px;
-        }
-        
-        .slider-container {
-            flex: 1;
-            max-width: 200px;
-        }
-        
-        .slider {
-            width: 100%;
-            height: 8px;
-            border-radius: 5px;
-            background: #e0e0e0;
-            outline: none;
-            -webkit-appearance: none;
-        }
-        
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            background: #2575fc;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-        
-        .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 30px;
-            flex-wrap: wrap;
         }
         
         .btn {
-            padding: 14px 28px;
+            padding: 12px 20px;
             border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
+            border-radius: 8px;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
         }
         
         .btn-primary {
-            background: linear-gradient(to right, #6a11cb, #2575fc);
+            background-color: #6a11cb;
             color: white;
-            flex: 1;
-            max-width: 220px;
         }
         
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 15px rgba(37, 117, 252, 0.4);
+            background-color: #5a0db3;
+            transform: translateY(-2px);
         }
         
         .btn-secondary {
-            background: #f0f0f0;
-            color: #444;
-            flex: 1;
-            max-width: 220px;
+            background-color: #f0f0f0;
+            color: #333;
         }
         
         .btn-secondary:hover {
-            background: #e0e0e0;
-            transform: translateY(-3px);
+            background-color: #e0e0e0;
         }
         
-        #graph-container {
+        .btn-success {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .canvas-container {
+            flex-grow: 1;
+            padding: 20px;
+            position: relative;
+        }
+        
+        #canvas {
             width: 100%;
-            height: 320px;
-            background-color: white;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 10px;
+            height: 100%;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: #f9f9f9;
         }
         
-        #solution-steps {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid #eee;
+        .points-list {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 10px;
         }
         
-        .step {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #f8f9ff;
-            border-radius: 10px;
-            border-left: 4px solid #6a11cb;
+        .point-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-bottom: 1px solid #f0f0f0;
         }
         
-        .step-title {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #2575fc;
+        .point-item:last-child {
+            border-bottom: none;
         }
         
-        .result-container {
-            background: linear-gradient(135deg, #6a11cb22, #2575fc22);
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
+        .point-number {
+            font-weight: bold;
+            color: #6a11cb;
+        }
+        
+        .point-coords {
+            font-family: monospace;
+        }
+        
+        .result-panel {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
             margin-top: 20px;
         }
         
         .result-title {
-            font-size: 1.4rem;
-            color: #6a11cb;
-            margin-bottom: 15px;
-        }
-        
-        .solution-result {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #2575fc;
-            margin: 10px 0;
-        }
-        
-        .equation-display {
-            font-size: 1.4rem;
-            margin: 15px 0;
-            padding: 15px;
-            background-color: #f8f9ff;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .solution-type {
             font-size: 1.2rem;
-            padding: 8px 20px;
-            border-radius: 50px;
-            display: inline-block;
-            margin-top: 10px;
-            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2c3e50;
         }
         
-        .unique-solution {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        
-        .no-solution {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        
-        .infinite-solutions {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-        
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
+        .path-length {
             font-size: 1.5rem;
-            z-index: 100;
-            transition: all 0.3s;
+            color: #e74c3c;
+            font-weight: bold;
         }
         
-        .theme-toggle:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: rotate(30deg);
+        .path-order {
+            margin-top: 10px;
+            font-family: monospace;
+            background-color: white;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #eee;
         }
         
-        .dark-theme {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-        }
-        
-        .dark-theme .panel {
-            background-color: rgba(30, 30, 46, 0.95);
-            color: #e0e0e0;
-        }
-        
-        .dark-theme .panel-title {
-            color: #6d9eff;
-        }
-        
-        .dark-theme .coeff-input {
-            background-color: #2d2d44;
-            border-color: #444;
-            color: #e0e0e0;
-        }
-        
-        .dark-theme .slider {
-            background: #444;
-        }
-        
-        .dark-theme .btn-secondary {
-            background: #2d2d44;
-            color: #e0e0e0;
-        }
-        
-        .dark-theme .step {
-            background-color: #2d2d44;
-        }
-        
-        .dark-theme .equation-display {
-            background-color: #2d2d44;
-            color: #e0e0e0;
-        }
-        
-        .dark-theme .result-container {
-            background: linear-gradient(135deg, #6a11cb33, #2575fc33);
+        .algorithm-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4fc;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.5;
         }
         
         footer {
-            color: white;
             text-align: center;
             padding: 20px;
+            color: #777;
             font-size: 0.9rem;
-            opacity: 0.8;
-            width: 100%;
             margin-top: 20px;
         }
         
-        @media (max-width: 1100px) {
-            .app-container {
+        @media (max-width: 1000px) {
+            .content {
                 flex-direction: column;
-                align-items: center;
             }
             
-            .panel {
-                max-width: 600px;
-                width: 100%;
-            }
-        }
-        
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .panel {
-                padding: 20px;
-            }
-            
-            .equation-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            
-            .coefficient-input {
-                max-width: 100%;
-            }
-            
-            .slider-container {
-                max-width: 100%;
+            .control-panel, .visualization {
+                min-width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <button class="theme-toggle" id="theme-toggle">
-        <i class="fas fa-moon"></i>
-    </button>
-    
     <div class="container">
         <header>
-            <h1><i class="fas fa-calculator"></i> 二元一次方程求解器</h1>
-            <p class="subtitle">输入两个二元一次方程，可视化查看直线交点并获取详细求解步骤。调整系数滑块实时查看图形变化。</p>
+            <h1>最短路径可视化工具</h1>
+            <p class="subtitle">输入二维坐标点，第一个点为起点，最后一个点为终点，系统将自动计算经过所有点且只经过一次的最短路径。</p>
         </header>
         
-        <div class="app-container">
-            <!-- 左侧：方程输入区 -->
-            <div class="panel">
-                <h2 class="panel-title"><i class="fas fa-edit"></i> 方程输入</h2>
+        <div class="content">
+            <div class="control-panel">
+                <h2 class="section-title">控制面板</h2>
                 
-                <div class="equation-input">
-                    <h3 style="margin-bottom: 15px; color: #6a11cb;">方程1: a₁x + b₁y = c₁</h3>
-                    <div class="equation-row">
-                        <span class="equation-label">a₁</span>
-                        <div class="coefficient-input">
-                            <input type="number" id="a1" class="coeff-input" value="2" step="0.5">
-                            <div class="slider-container">
-                                <input type="range" min="-10" max="10" step="0.5" value="2" class="slider" id="a1-slider">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="equation-row">
-                        <span class="equation-label">b₁</span>
-                        <div class="coefficient-input">
-                            <input type="number" id="b1" class="coeff-input" value="3" step="0.5">
-                            <div class="slider-container">
-                                <input type="range" min="-10" max="10" step="0.5" value="3" class="slider" id="b1-slider">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="equation-row">
-                        <span class="equation-label">c₁</span>
-                        <div class="coefficient-input">
-                            <input type="number" id="c1" class="coeff-input" value="5" step="0.5">
-                            <div class="slider-container">
-                                <input type="range" min="-20" max="20" step="0.5" value="5" class="slider" id="c1-slider">
-                            </div>
+                <div class="input-group">
+                    <label for="xInput">X 坐标:</label>
+                    <input type="number" id="xInput" placeholder="输入X坐标 (0-800)" min="0" max="800" value="100">
+                </div>
+                
+                <div class="input-group">
+                    <label for="yInput">Y 坐标:</label>
+                    <input type="number" id="yInput" placeholder="输入Y坐标 (0-600)" min="0" max="600" value="100">
+                </div>
+                
+                <div class="input-group">
+                    <button class="btn btn-primary" id="addPointBtn">添加坐标点</button>
+                    <button class="btn btn-secondary" id="addRandomBtn">随机添加点</button>
+                    <button class="btn btn-danger" id="clearBtn">清除所有点</button>
+                </div>
+                
+                <div class="input-group">
+                    <h3 class="section-title">坐标点列表</h3>
+                    <div class="points-list" id="pointsList">
+                        <div class="point-item">
+                            <span class="point-number">起点</span>
+                            <span class="point-coords">(100, 100)</span>
                         </div>
                     </div>
                 </div>
                 
-                <div class="equation-input">
-                    <h3 style="margin-bottom: 15px; color: #2575fc;">方程2: a₂x + b₂y = c₂</h3>
-                    <div class="equation-row">
-                        <span class="equation-label">a₂</span>
-                        <div class="coefficient-input">
-                            <input type="number" id="a2" class="coeff-input" value="4" step="0.5">
-                            <div class="slider-container">
-                                <input type="range" min="-10" max="10" step="0.5" value="4" class="slider" id="a2-slider">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="equation-row">
-                        <span class="equation-label">b₂</span>
-                        <div class="coefficient-input">
-                            <input type="number" id="b2" class="coeff-input" value="1" step="0.5">
-                            <div class="slider-container">
-                                <input type="range" min="-10" max="10" step="0.5" value="1" class="slider" id="b2-slider">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="equation-row">
-                        <span class="equation-label">c₂</span>
-                        <div class="coefficient-input">
-                            <input type="number" id="c2" class="coeff-input" value="6" step="0.5">
-                            <div class="slider-container">
-                                <input type="range" min="-20" max="20" step="0.5" value="6" class="slider" id="c2-slider">
-                            </div>
-                        </div>
-                    </div>
+                <div class="input-group">
+                    <button class="btn btn-success" id="calculateBtn">计算最短路径</button>
+                    <p style="margin-top: 10px; font-size: 0.9rem; color: #666;">注意：第一个点为起点，最后一个点为终点</p>
                 </div>
                 
-                <div class="button-container">
-                    <button class="btn btn-primary" id="solve-btn">
-                        <i class="fas fa-play-circle"></i> 求解方程
-                    </button>
-                    <button class="btn btn-secondary" id="reset-btn">
-                        <i class="fas fa-redo"></i> 重置系数
-                    </button>
+                <div class="result-panel">
+                    <h3 class="result-title">计算结果</h3>
+                    <p>路径长度: <span class="path-length" id="pathLength">--</span></p>
+                    <p>路径顺序: <span class="path-order" id="pathOrder">--</span></p>
+                </div>
+                
+                <div class="algorithm-info">
+                    <p><strong>算法说明:</strong> 这是一个旅行商问题(TSP)的变种，起点和终点固定。本工具使用最近邻算法寻找近似最短路径。对于大量点，精确解需要指数级时间，因此使用启发式算法。</p>
                 </div>
             </div>
             
-            <!-- 中间：图形可视化 -->
-            <div class="panel">
-                <h2 class="panel-title"><i class="fas fa-chart-line"></i> 方程可视化</h2>
-                <div class="equation-display">
-                    <span id="eq1-display">2x + 3y = 5</span><br>
-                    <span id="eq2-display">4x + y = 6</span>
+            <div class="visualization">
+                <h2 class="section-title">可视化画布</h2>
+                <div class="canvas-container">
+                    <canvas id="canvas" width="800" height="600"></canvas>
                 </div>
-                <div id="graph-container">
-                    <canvas id="graph-canvas" width="500" height="300"></canvas>
-                </div>
-                <div id="graph-info" style="margin-top: 15px; font-style: italic; color: #666; text-align: center;">
-                    图形显示x和y在-5到5范围内的直线
-                </div>
-            </div>
-            
-            <!-- 右侧：求解步骤和结果 -->
-            <div class="panel">
-                <h2 class="panel-title"><i class="fas fa-list-ol"></i> 求解步骤</h2>
-                <div id="solution-steps">
-                    <div class="step">
-                        <div class="step-title">步骤 1: 方程形式</div>
-                        <div id="step1">将方程整理为标准形式。</div>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-title">步骤 2: 计算行列式</div>
-                        <div id="step2">计算系数行列式 D = a₁b₂ - a₂b₁。</div>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-title">步骤 3: 判断解的情况</div>
-                        <div id="step3">根据行列式的值判断方程组的解。</div>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-title">步骤 4: 计算结果</div>
-                        <div id="step4">如果方程组有唯一解，则计算x和y的值。</div>
-                    </div>
-                </div>
-                
-                <div class="result-container">
-                    <div class="result-title">方程组的解</div>
-                    <div class="solution-result" id="solution-result">等待求解...</div>
-                    <div id="solution-type" class="solution-type unique-solution" style="display:none;">唯一解</div>
+                <div style="padding: 0 20px 20px;">
+                    <p><strong>使用说明:</strong> 点击画布添加点，或使用左侧控制面板输入坐标。至少需要2个点才能计算路径。</p>
                 </div>
             </div>
         </div>
         
         <footer>
-            <p>Vibe Coding 编程挑战 | 二元一次方程求解器 | 使用HTML5 Canvas和原生JavaScript构建</p>
+            <p>最短路径可视化工具 &copy; 2023 | 使用最近邻算法计算近似最短路径</p>
         </footer>
     </div>
 
     <script>
-        // 获取DOM元素
-        const inputs = {
-            a1: document.getElementById('a1'),
-            b1: document.getElementById('b1'),
-            c1: document.getElementById('c1'),
-            a2: document.getElementById('a2'),
-            b2: document.getElementById('b2'),
-            c2: document.getElementById('c2')
-        };
-        
-        const sliders = {
-            a1: document.getElementById('a1-slider'),
-            b1: document.getElementById('b1-slider'),
-            c1: document.getElementById('c1-slider'),
-            a2: document.getElementById('a2-slider'),
-            b2: document.getElementById('b2-slider'),
-            c2: document.getElementById('c2-slider')
-        };
-        
-        const equationDisplays = {
-            eq1: document.getElementById('eq1-display'),
-            eq2: document.getElementById('eq2-display')
-        };
-        
-        const stepDisplays = {
-            step1: document.getElementById('step1'),
-            step2: document.getElementById('step2'),
-            step3: document.getElementById('step3'),
-            step4: document.getElementById('step4')
-        };
-        
-        const solutionResult = document.getElementById('solution-result');
-        const solutionType = document.getElementById('solution-type');
-        const solveBtn = document.getElementById('solve-btn');
-        const resetBtn = document.getElementById('reset-btn');
-        const themeToggle = document.getElementById('theme-toggle');
-        
-        // 图形绘制
-        const canvas = document.getElementById('graph-canvas');
+        // 初始化变量
+        const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
+        const xInput = document.getElementById('xInput');
+        const yInput = document.getElementById('yInput');
+        const addPointBtn = document.getElementById('addPointBtn');
+        const addRandomBtn = document.getElementById('addRandomBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const pointsList = document.getElementById('pointsList');
+        const pathLength = document.getElementById('pathLength');
+        const pathOrder = document.getElementById('pathOrder');
         
-        // 初始系数值
-        const initialValues = {
-            a1: 2, b1: 3, c1: 5,
-            a2: 4, b2: 1, c2: 6
-        };
+        let points = [{x: 100, y: 100}]; // 初始点
+        let shortestPath = [];
+        let shortestDistance = 0;
         
-        // 同步滑块和输入框
-        function syncInputAndSlider(inputId, sliderId) {
-            const input = document.getElementById(inputId);
-            const slider = document.getElementById(sliderId);
+        // 绘制函数
+        function draw() {
+            // 清空画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            input.addEventListener('input', function() {
-                slider.value = this.value;
-                updateEquationDisplay();
-                drawGraph();
+            // 绘制网格背景
+            drawGrid();
+            
+            // 绘制所有点
+            points.forEach((point, index) => {
+                drawPoint(point.x, point.y, index);
             });
             
-            slider.addEventListener('input', function() {
-                input.value = this.value;
-                updateEquationDisplay();
-                drawGraph();
-            });
-        }
-        
-        // 初始化同步
-        Object.keys(inputs).forEach(key => {
-            syncInputAndSlider(key, `${key}-slider`);
-        });
-        
-        // 更新方程显示
-        function updateEquationDisplay() {
-            const a1 = parseFloat(inputs.a1.value);
-            const b1 = parseFloat(inputs.b1.value);
-            const c1 = parseFloat(inputs.c1.value);
-            const a2 = parseFloat(inputs.a2.value);
-            const b2 = parseFloat(inputs.b2.value);
-            const c2 = parseFloat(inputs.c2.value);
-            
-            equationDisplays.eq1.textContent = formatEquation(a1, b1, c1);
-            equationDisplays.eq2.textContent = formatEquation(a2, b2, c2);
-        }
-        
-        // 格式化方程显示
-        function formatEquation(a, b, c) {
-            let eq = "";
-            
-            // 处理x系数
-            if (a === 0) {
-                eq += "";
-            } else if (a === 1) {
-                eq += "x";
-            } else if (a === -1) {
-                eq += "-x";
-            } else {
-                eq += a + "x";
+            // 如果已经计算了最短路径，绘制路径
+            if (shortestPath.length > 0) {
+                drawPath();
             }
-            
-            // 处理y系数
-            if (b === 0) {
-                // 如果a也为0，方程将无效，这里不处理
-            } else if (b > 0) {
-                eq += (eq ? " + " : "") + (b === 1 ? "y" : b + "y");
-            } else {
-                eq += (b === -1 ? " - y" : " - " + Math.abs(b) + "y");
-            }
-            
-            // 如果没有x和y项
-            if (!eq) eq = "0";
-            
-            eq += " = " + c;
-            
-            return eq;
         }
         
-        // 绘制坐标系和直线
-        function drawGraph() {
-            const a1 = parseFloat(inputs.a1.value);
-            const b1 = parseFloat(inputs.b1.value);
-            const c1 = parseFloat(inputs.c1.value);
-            const a2 = parseFloat(inputs.a2.value);
-            const b2 = parseFloat(inputs.b2.value);
-            const c2 = parseFloat(inputs.c2.value);
-            
-            const width = canvas.width;
-            const height = canvas.height;
-            const padding = 40;
-            const graphWidth = width - 2 * padding;
-            const graphHeight = height - 2 * padding;
-            
-            // 清除画布
-            ctx.clearRect(0, 0, width, height);
-            
-            // 绘制坐标系背景
-            ctx.fillStyle = document.body.classList.contains('dark-theme') ? '#1e1e2e' : '#f8f9ff';
-            ctx.fillRect(padding, padding, graphWidth, graphHeight);
-            
-            // 绘制坐标轴
-            ctx.strokeStyle = document.body.classList.contains('dark-theme') ? '#666' : '#ccc';
+        // 绘制网格
+        function drawGrid() {
+            ctx.strokeStyle = '#f0f0f0';
             ctx.lineWidth = 1;
             
-            // x轴
-            ctx.beginPath();
-            ctx.moveTo(padding, height/2);
-            ctx.lineTo(width - padding, height/2);
-            ctx.stroke();
-            
-            // y轴
-            ctx.beginPath();
-            ctx.moveTo(width/2, padding);
-            ctx.lineTo(width/2, height - padding);
-            ctx.stroke();
-            
-            // 绘制刻度
-            ctx.fillStyle = document.body.classList.contains('dark-theme') ? '#aaa' : '#666';
-            ctx.font = "12px Arial";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "top";
-            
-            // x轴刻度
-            for (let i = -5; i <= 5; i++) {
-                if (i === 0) continue;
-                const x = width/2 + (i/5) * (graphWidth/2);
+            // 绘制垂直线
+            for (let x = 0; x <= canvas.width; x += 50) {
                 ctx.beginPath();
-                ctx.moveTo(x, height/2 - 5);
-                ctx.lineTo(x, height/2 + 5);
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
                 ctx.stroke();
-                ctx.fillText(i.toString(), x, height/2 + 10);
             }
             
-            // y轴刻度
-            ctx.textAlign = "right";
-            ctx.textBaseline = "middle";
-            for (let i = -5; i <= 5; i++) {
-                if (i === 0) continue;
-                const y = height/2 - (i/5) * (graphHeight/2);
+            // 绘制水平线
+            for (let y = 0; y <= canvas.height; y += 50) {
                 ctx.beginPath();
-                ctx.moveTo(width/2 - 5, y);
-                ctx.lineTo(width/2 + 5, y);
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
                 ctx.stroke();
-                ctx.fillText(i.toString(), width/2 - 10, y);
             }
-            
-            // 原点标注
-            ctx.textAlign = "center";
-            ctx.textBaseline = "top";
-            ctx.fillText("O", width/2 - 12, height/2 + 12);
-            ctx.fillText("x", width - padding + 5, height/2 + 5);
-            ctx.textAlign = "right";
-            ctx.textBaseline = "middle";
-            ctx.fillText("y", width/2 - 5, padding - 10);
-            
-            // 绘制第一条直线
-            drawLine(a1, b1, c1, '#6a11cb', '方程1');
-            
-            // 绘制第二条直线
-            drawLine(a2, b2, c2, '#2575fc', '方程2');
-            
-            // 绘制交点
-            drawIntersection(a1, b1, c1, a2, b2, c2);
         }
         
-        // 绘制直线
-        function drawLine(a, b, c, color, label) {
-            // 处理特殊情况
-            if (a === 0 && b === 0) return;
+        // 绘制点
+        function drawPoint(x, y, index) {
+            ctx.beginPath();
+            ctx.arc(x, y, 8, 0, Math.PI * 2);
             
-            const width = canvas.width;
-            const height = canvas.height;
-            const padding = 40;
-            const graphWidth = width - 2 * padding;
-            const graphHeight = height - 2 * padding;
-            
-            // 计算直线在坐标系边界上的点
-            let points = [];
-            
-            // 如果b不为0，计算x在-5和5时的y值
-            if (b !== 0) {
-                // x = -5
-                const y1 = (c - a * (-5)) / b;
-                if (y1 >= -5 && y1 <= 5) {
-                    points.push({x: -5, y: y1});
-                }
-                
-                // x = 5
-                const y2 = (c - a * 5) / b;
-                if (y2 >= -5 && y2 <= 5) {
-                    points.push({x: 5, y: y2});
-                }
+            // 根据点的类型设置颜色：起点绿色，终点红色，其他点蓝色
+            if (index === 0) {
+                ctx.fillStyle = '#2ecc71'; // 起点绿色
+            } else if (index === points.length - 1 && points.length > 1) {
+                ctx.fillStyle = '#e74c3c'; // 终点红色
+            } else {
+                ctx.fillStyle = '#3498db'; // 中间点蓝色
             }
             
-            // 如果a不为0，计算y在-5和5时的x值
-            if (a !== 0) {
-                // y = -5
-                const x1 = (c - b * (-5)) / a;
-                if (x1 >= -5 && x1 <= 5) {
-                    points.push({x: x1, y: -5});
-                }
-                
-                // y = 5
-                const x2 = (c - b * 5) / a;
-                if (x2 >= -5 && x2 <= 5) {
-                    points.push({x: x2, y: 5});
-                }
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // 绘制点的编号
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(index + 1, x, y);
+        }
+        
+        // 绘制路径
+        function drawPath() {
+            if (shortestPath.length <= 1) return;
+            
+            ctx.beginPath();
+            ctx.moveTo(points[shortestPath[0]].x, points[shortestPath[0]].y);
+            
+            for (let i = 1; i < shortestPath.length; i++) {
+                const pointIndex = shortestPath[i];
+                ctx.lineTo(points[pointIndex].x, points[pointIndex].y);
             }
             
-            // 去重
-            points = points.filter((point, index, self) =>
-                index === self.findIndex(p => Math.abs(p.x - point.x) < 0.01 && Math.abs(p.y - point.y) < 0.01)
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // 绘制路径上的箭头
+            for (let i = 0; i < shortestPath.length - 1; i++) {
+                const startIndex = shortestPath[i];
+                const endIndex = shortestPath[i + 1];
+                drawArrow(
+                    points[startIndex].x, points[startIndex].y,
+                    points[endIndex].x, points[endIndex].y
+                );
+            }
+        }
+        
+        // 绘制箭头
+        function drawArrow(fromX, fromY, toX, toY) {
+            const headlen = 15; // 箭头长度
+            const dx = toX - fromX;
+            const dy = toY - fromY;
+            const angle = Math.atan2(dy, dx);
+            
+            ctx.beginPath();
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(
+                toX - headlen * Math.cos(angle - Math.PI / 7),
+                toY - headlen * Math.sin(angle - Math.PI / 7)
+            );
+            ctx.lineTo(
+                toX - headlen * Math.cos(angle + Math.PI / 7),
+                toY - headlen * Math.sin(angle + Math.PI / 7)
+            );
+            ctx.lineTo(toX, toY);
+            ctx.lineTo(
+                toX - headlen * Math.cos(angle - Math.PI / 7),
+                toY - headlen * Math.sin(angle - Math.PI / 7)
             );
             
-            // 如果点数不足2个，直线可能完全在坐标系外
-            if (points.length < 2) return;
-            
-            // 绘制直线
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            
-            // 转换第一个点到canvas坐标
-            const canvasX1 = width/2 + (points[0].x/5) * (graphWidth/2);
-            const canvasY1 = height/2 - (points[0].y/5) * (graphHeight/2);
-            ctx.moveTo(canvasX1, canvasY1);
-            
-            // 转换第二个点到canvas坐标
-            const canvasX2 = width/2 + (points[1].x/5) * (graphWidth/2);
-            const canvasY2 = height/2 - (points[1].y/5) * (graphHeight/2);
-            ctx.lineTo(canvasX2, canvasY2);
-            
-            ctx.stroke();
-            
-            // 添加直线标签
-            ctx.fillStyle = color;
-            ctx.font = "bold 14px Arial";
-            ctx.textAlign = "left";
-            ctx.textBaseline = "middle";
-            ctx.fillText(label, canvasX2 + 5, canvasY2);
+            ctx.fillStyle = '#e74c3c';
+            ctx.fill();
         }
         
-        // 绘制交点
-        function drawIntersection(a1, b1, c1, a2, b2, c2) {
-            const width = canvas.width;
-            const height = canvas.height;
-            const padding = 40;
-            const graphWidth = width - 2 * padding;
-            const graphHeight = height - 2 * padding;
+        // 更新点列表
+        function updatePointsList() {
+            pointsList.innerHTML = '';
             
-            // 计算行列式
-            const D = a1 * b2 - a2 * b1;
-            const Dx = c1 * b2 - c2 * b1;
-            const Dy = a1 * c2 - a2 * c1;
-            
-            // 如果有唯一解
-            if (Math.abs(D) > 0.0001) {
-                const x = Dx / D;
-                const y = Dy / D;
+            points.forEach((point, index) => {
+                const pointItem = document.createElement('div');
+                pointItem.className = 'point-item';
                 
-                // 检查交点是否在可见范围内
-                if (x >= -5 && x <= 5 && y >= -5 && y <= 5) {
-                    // 转换到canvas坐标
-                    const canvasX = width/2 + (x/5) * (graphWidth/2);
-                    const canvasY = height/2 - (y/5) * (graphHeight/2);
-                    
-                    // 绘制交点
-                    ctx.fillStyle = '#ff4757';
-                    ctx.beginPath();
-                    ctx.arc(canvasX, canvasY, 6, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    // 绘制交点坐标标签
-                    ctx.fillStyle = '#ff4757';
-                    ctx.font = "bold 12px Arial";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "bottom";
-                    ctx.fillText(`(${x.toFixed(2)}, ${y.toFixed(2)})`, canvasX, canvasY - 10);
-                }
-            }
-        }
-        
-        // 求解方程组
-        function solveEquations() {
-            const a1 = parseFloat(inputs.a1.value);
-            const b1 = parseFloat(inputs.b1.value);
-            const c1 = parseFloat(inputs.c1.value);
-            const a2 = parseFloat(inputs.a2.value);
-            const b2 = parseFloat(inputs.b2.value);
-            const c2 = parseFloat(inputs.c2.value);
-            
-            // 步骤1：显示方程形式
-            stepDisplays.step1.innerHTML = `
-                方程1: ${formatEquation(a1, b1, c1)}<br>
-                方程2: ${formatEquation(a2, b2, c2)}
-            `;
-            
-            // 步骤2：计算行列式
-            const D = a1 * b2 - a2 * b1;
-            const Dx = c1 * b2 - c2 * b1;
-            const Dy = a1 * c2 - a2 * c1;
-            
-            stepDisplays.step2.innerHTML = `
-                D = a₁b₂ - a₂b₁ = (${a1})×(${b2}) - (${a2})×(${b1}) = ${D.toFixed(2)}<br>
-                Dx = c₁b₂ - c₂b₁ = (${c1})×(${b2}) - (${c2})×(${b1}) = ${Dx.toFixed(2)}<br>
-                Dy = a₁c₂ - a₂c₁ = (${a1})×(${c2}) - (${a2})×(${c1}) = ${Dy.toFixed(2)}
-            `;
-            
-            // 步骤3：判断解的情况
-            let solutionTypeText = "";
-            let solutionClass = "";
-            
-            if (Math.abs(D) > 0.0001) {
-                solutionTypeText = "D ≠ 0，方程组有唯一解";
-                solutionClass = "unique-solution";
-            } else if (Math.abs(Dx) < 0.0001 && Math.abs(Dy) < 0.0001) {
-                solutionTypeText = "D = 0 且 Dx = 0, Dy = 0，方程组有无穷多解";
-                solutionClass = "infinite-solutions";
-            } else {
-                solutionTypeText = "D = 0 但 Dx ≠ 0 或 Dy ≠ 0，方程组无解";
-                solutionClass = "no-solution";
-            }
-            
-            stepDisplays.step3.innerHTML = solutionTypeText;
-            
-            // 步骤4：计算结果
-            let step4Text = "";
-            let resultText = "";
-            
-            if (Math.abs(D) > 0.0001) {
-                const x = Dx / D;
-                const y = Dy / D;
-                step4Text = `
-                    x = Dx / D = ${Dx.toFixed(2)} / ${D.toFixed(2)} = ${x.toFixed(2)}<br>
-                    y = Dy / D = ${Dy.toFixed(2)} / ${D.toFixed(2)} = ${y.toFixed(2)}
+                let pointType = "中间点";
+                if (index === 0) pointType = "起点";
+                if (index === points.length - 1 && points.length > 1) pointType = "终点";
+                
+                pointItem.innerHTML = `
+                    <span class="point-number">${pointType} ${index + 1}</span>
+                    <span class="point-coords">(${point.x}, ${point.y})</span>
                 `;
-                resultText = `x = ${x.toFixed(2)}, y = ${y.toFixed(2)}`;
-            } else if (Math.abs(Dx) < 0.0001 && Math.abs(Dy) < 0.0001) {
-                step4Text = "两个方程表示同一条直线，因此有无穷多解";
-                resultText = "无穷多解";
-            } else {
-                step4Text = "两个方程表示的直线平行，没有交点，因此无解";
-                resultText = "无解";
-            }
-            
-            stepDisplays.step4.innerHTML = step4Text;
-            solutionResult.textContent = resultText;
-            
-            // 显示解的类型
-            solutionType.textContent = solutionTypeText.match(/唯一解|无穷多解|无解/)[0];
-            solutionType.className = `solution-type ${solutionClass}`;
-            solutionType.style.display = "inline-block";
-            
-            // 更新图形
-            drawGraph();
+                
+                pointsList.appendChild(pointItem);
+            });
         }
         
-        // 重置系数
-        function resetCoefficients() {
-            inputs.a1.value = initialValues.a1;
-            inputs.b1.value = initialValues.b1;
-            inputs.c1.value = initialValues.c1;
-            inputs.a2.value = initialValues.a2;
-            inputs.b2.value = initialValues.b2;
-            inputs.c2.value = initialValues.c2;
-            
-            // 同步滑块
-            sliders.a1.value = initialValues.a1;
-            sliders.b1.value = initialValues.b1;
-            sliders.c1.value = initialValues.c1;
-            sliders.a2.value = initialValues.a2;
-            sliders.b2.value = initialValues.b2;
-            sliders.c2.value = initialValues.c2;
-            
-            // 更新显示和图形
-            updateEquationDisplay();
-            drawGraph();
-            
-            // 重置求解步骤
-            stepDisplays.step1.textContent = "将方程整理为标准形式。";
-            stepDisplays.step2.textContent = "计算系数行列式 D = a₁b₂ - a₂b₁。";
-            stepDisplays.step3.textContent = "根据行列式的值判断方程组的解。";
-            stepDisplays.step4.textContent = "如果方程组有唯一解，则计算x和y的值。";
-            solutionResult.textContent = "等待求解...";
-            solutionType.style.display = "none";
+        // 计算两点之间的距离
+        function distance(point1, point2) {
+            return Math.sqrt(
+                Math.pow(point2.x - point1.x, 2) + 
+                Math.pow(point2.y - point1.y, 2)
+            );
         }
         
-        // 主题切换
-        function toggleTheme() {
-            document.body.classList.toggle('dark-theme');
-            const icon = themeToggle.querySelector('i');
-            if (document.body.classList.contains('dark-theme')) {
-                icon.className = 'fas fa-sun';
-                themeToggle.title = "切换到亮色主题";
-            } else {
-                icon.className = 'fas fa-moon';
-                themeToggle.title = "切换到暗色主题";
+        // 计算最短路径（使用最近邻算法）
+        function calculateShortestPath() {
+            if (points.length < 2) {
+                alert("至少需要两个点才能计算路径");
+                return;
             }
             
-            // 重绘图形以适应新主题
-            drawGraph();
+            // 使用最近邻算法寻找近似最短路径
+            const startIndex = 0; // 起点固定为第一个点
+            const endIndex = points.length - 1; // 终点固定为最后一个点
+            
+            // 初始化未访问点集合（排除起点和终点）
+            const unvisited = [];
+            for (let i = 1; i < points.length - 1; i++) {
+                unvisited.push(i);
+            }
+            
+            // 构建路径
+            const path = [startIndex];
+            let currentIndex = startIndex;
+            let totalDistance = 0;
+            
+            // 访问所有未访问点
+            while (unvisited.length > 0) {
+                // 找到离当前点最近的点
+                let nearestIndex = -1;
+                let nearestDistance = Infinity;
+                
+                for (let i = 0; i < unvisited.length; i++) {
+                    const dist = distance(points[currentIndex], points[unvisited[i]]);
+                    if (dist < nearestDistance) {
+                        nearestDistance = dist;
+                        nearestIndex = i;
+                    }
+                }
+                
+                // 将最近点添加到路径
+                const nextIndex = unvisited[nearestIndex];
+                path.push(nextIndex);
+                totalDistance += nearestDistance;
+                currentIndex = nextIndex;
+                
+                // 从未访问集合中移除
+                unvisited.splice(nearestIndex, 1);
+            }
+            
+            // 最后连接到终点
+            const finalDistance = distance(points[currentIndex], points[endIndex]);
+            totalDistance += finalDistance;
+            path.push(endIndex);
+            
+            // 更新全局变量
+            shortestPath = path;
+            shortestDistance = totalDistance;
+            
+            // 更新UI
+            pathLength.textContent = shortestDistance.toFixed(2);
+            pathOrder.textContent = path.map(i => i + 1).join(' → ');
+            
+            // 重新绘制
+            draw();
         }
+        
+        // 添加坐标点
+        function addPoint(x, y) {
+            points.push({x, y});
+            updatePointsList();
+            draw();
+        }
+        
+        // 事件监听器
+        addPointBtn.addEventListener('click', () => {
+            const x = parseInt(xInput.value);
+            const y = parseInt(yInput.value);
+            
+            if (isNaN(x) || isNaN(y) || x < 0 || x > 800 || y < 0 || y > 600) {
+                alert("请输入有效的坐标值 (X: 0-800, Y: 0-600)");
+                return;
+            }
+            
+            addPoint(x, y);
+            xInput.value = Math.min(x + 50, 750);
+            yInput.value = Math.min(y + 50, 550);
+        });
+        
+        addRandomBtn.addEventListener('click', () => {
+            const x = Math.floor(Math.random() * 700) + 50;
+            const y = Math.floor(Math.random() * 500) + 50;
+            addPoint(x, y);
+            
+            // 更新输入框显示最近添加的随机点
+            xInput.value = x;
+            yInput.value = y;
+        });
+        
+        clearBtn.addEventListener('click', () => {
+            points = [{x: 100, y: 100}]; // 重置为初始点
+            shortestPath = [];
+            shortestDistance = 0;
+            updatePointsList();
+            pathLength.textContent = "--";
+            pathOrder.textContent = "--";
+            draw();
+        });
+        
+        calculateBtn.addEventListener('click', calculateShortestPath);
+        
+        // 画布点击事件
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
+            
+            addPoint(x, y);
+            
+            // 更新输入框
+            xInput.value = Math.round(x);
+            yInput.value = Math.round(y);
+        });
         
         // 初始化
-        function init() {
-            updateEquationDisplay();
-            drawGraph();
-            
-            // 绑定事件
-            solveBtn.addEventListener('click', solveEquations);
-            resetBtn.addEventListener('click', resetCoefficients);
-            themeToggle.addEventListener('click', toggleTheme);
-            
-            // 初始求解
-            solveEquations();
-        }
+        updatePointsList();
+        draw();
         
-        // 页面加载完成后初始化
-        window.addEventListener('load', init);
+        // 添加一些示例点以便演示
+        setTimeout(() => {
+            addPoint(200, 300);
+            addPoint(400, 200);
+            addPoint(600, 400);
+            addPoint(300, 500);
+            addPoint(700, 100);
+            
+            // 自动计算路径
+            setTimeout(calculateShortestPath, 500);
+        }, 500);
     </script>
 </body>
 </html>
